@@ -62,8 +62,8 @@ type Model struct {
 	// Deprecated: high performance rendering is now deprecated in Bubble Tea.
 	HighPerformanceRendering bool
 
-	// horizontalStep is the number of cells to move during a horizontal
-	// scroll.
+	// horizontalStep is the number of cells to move by default during
+	// a horizontal scroll.
 	horizontalStep int
 
 	initialized      bool
@@ -325,20 +325,20 @@ func (m *Model) SetHorizontalStep(n int) {
 }
 
 // MoveLeft moves the view left by the given number of cells.
-func (m *Model) MoveLeft() {
-	m.xOffset -= m.horizontalStep
+func (m *Model) MoveLeft(n int) {
+	m.xOffset -= n
 	if m.xOffset < 0 {
 		m.xOffset = 0
 	}
 }
 
 // MoveRight moves the view left by the given number of cells.
-func (m *Model) MoveRight() {
+func (m *Model) MoveRight(n int) {
 	// prevents over scrolling to the right
 	if m.xOffset >= m.longestLineWidth-m.Width {
 		return
 	}
-	m.xOffset += m.horizontalStep
+	m.xOffset += n
 }
 
 // GotoLeft resets the horizontal scroll position to 0.
@@ -402,10 +402,10 @@ func (m Model) updateAsModel(msg tea.Msg) (Model, tea.Cmd) {
 			}
 
 		case key.Matches(msg, m.KeyMap.Left):
-			m.MoveLeft()
+			m.MoveLeft(m.horizontalStep)
 
 		case key.Matches(msg, m.KeyMap.Right):
-			m.MoveRight()
+			m.MoveRight(m.horizontalStep)
 		}
 
 	case tea.MouseMsg:
