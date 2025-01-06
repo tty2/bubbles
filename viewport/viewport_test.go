@@ -91,28 +91,28 @@ func TestMoveLeft(t *testing.T) {
 		t.Parallel()
 
 		m := New(10, 10)
-		if m.indent != zeroPosition {
-			t.Errorf("default indent should be %d, got %d", zeroPosition, m.indent)
+		if m.xOffset != zeroPosition {
+			t.Errorf("default x offset should be %d, got %d", zeroPosition, m.xOffset)
 		}
 
 		m.MoveLeft()
-		if m.indent != zeroPosition {
-			t.Errorf("indent should be %d, got %d", zeroPosition, m.indent)
+		if m.xOffset != zeroPosition {
+			t.Errorf("x offset should be %d, got %d", zeroPosition, m.xOffset)
 		}
 	})
 
 	t.Run("move", func(t *testing.T) {
 		t.Parallel()
 		m := New(10, 10)
-		if m.indent != zeroPosition {
-			t.Errorf("default indent should be %d, got %d", zeroPosition, m.indent)
+		if m.xOffset != zeroPosition {
+			t.Errorf("default x offset should be %d, got %d", zeroPosition, m.xOffset)
 		}
 
-		m.indent = defaultHorizontalStep * 2
+		m.xOffset = defaultHorizontalStep * 2
 		m.MoveLeft()
 		newIndent := defaultHorizontalStep
-		if m.indent != newIndent {
-			t.Errorf("indent should be %d, got %d", newIndent, m.indent)
+		if m.xOffset != newIndent {
+			t.Errorf("indent should be %d, got %d", newIndent, m.xOffset)
 		}
 	})
 }
@@ -127,14 +127,14 @@ func TestMoveRight(t *testing.T) {
 
 		m := New(10, 10)
 		m.SetContent("Some line that is longer than width")
-		if m.indent != zeroPosition {
-			t.Errorf("default indent should be %d, got %d", zeroPosition, m.indent)
+		if m.xOffset != zeroPosition {
+			t.Errorf("default indent should be %d, got %d", zeroPosition, m.xOffset)
 		}
 
 		m.MoveRight()
 		newIndent := defaultHorizontalStep
-		if m.indent != newIndent {
-			t.Errorf("indent should be %d, got %d", newIndent, m.indent)
+		if m.xOffset != newIndent {
+			t.Errorf("indent should be %d, got %d", newIndent, m.xOffset)
 		}
 	})
 }
@@ -148,11 +148,11 @@ func TestResetIndent(t *testing.T) {
 		zeroPosition := 0
 
 		m := New(10, 10)
-		m.indent = 500
+		m.xOffset = 500
 
-		m.ResetIndent()
-		if m.indent != zeroPosition {
-			t.Errorf("indent should be %d, got %d", zeroPosition, m.indent)
+		m.GotoLeft()
+		if m.xOffset != zeroPosition {
+			t.Errorf("indent should be %d, got %d", zeroPosition, m.xOffset)
 		}
 	})
 }
@@ -196,7 +196,7 @@ func TestVisibleLines(t *testing.T) {
 
 		m := New(10, 10)
 		list := m.visibleLines()
-		m.indent = 5
+		m.xOffset = 5
 
 		if len(list) != 0 {
 			t.Errorf("list should be empty, got %d", len(list))
@@ -277,7 +277,7 @@ func TestVisibleLines(t *testing.T) {
 		m.MoveRight()
 		list = m.visibleLines()
 
-		newPrefix := perceptPrefix[m.indent:]
+		newPrefix := perceptPrefix[m.xOffset:]
 		if !strings.HasPrefix(list[0], newPrefix) {
 			t.Errorf("first list item has to have prefix %s, get %s", newPrefix, list[0])
 		}
@@ -346,8 +346,8 @@ func TestVisibleLines(t *testing.T) {
 			}
 		}
 
-		// move left second times do not change lites if indent == 0
-		m.indent = 0
+		// move left second times do not change lites if x offset == 0
+		m.xOffset = 0
 		m.MoveLeft()
 		list = m.visibleLines()
 		for i := range list {
